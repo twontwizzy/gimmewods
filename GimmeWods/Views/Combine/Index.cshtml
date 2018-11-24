@@ -1,0 +1,30 @@
+﻿@model GimmeWods.Models.Combine
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Combine Home</h2>
+
+@Html.ActionLink("Add Participants", "CombineParticipants")<br />
+@Html.ActionLink("Add Combine Test", "CombineTest")<br />
+@Html.ActionLink("Create Combine", "CreateCombine")
+
+@if (Model.CombineList != null)
+{
+    <table class="table table-bordered">
+        <tr>
+            <th>Combine Date</th>
+            <th>Combine</th>
+            <th>Options</th>
+        </tr>
+
+        @foreach (var p in Model.CombineList)
+        {
+            <tr>
+                <td>@p.CombineDate</td>
+                <td>@p.CombineName</td>
+                <td>@Html.ActionLink("Edit", "CombineTest", "Combine", new { id = p.CombineID }, null)</td>
+            </tr>
+        }
+    </table>
+}

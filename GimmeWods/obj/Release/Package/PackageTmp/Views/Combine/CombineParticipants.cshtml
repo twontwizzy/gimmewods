@@ -1,0 +1,47 @@
+﻿@model GimmeWods.Models.Participants
+@{
+    ViewBag.Title = "Combine Participants";
+}
+
+@using (Html.BeginForm("CombineParticipants", "Combine"))
+{
+    <h2>Combine Participants</h2>
+
+    <div>
+        @Html.LabelFor(m => m.ParticipantFirstName)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.ParticipantFirstName)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.ParticipantsLastName)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.ParticipantsLastName)
+    </div>
+
+    <div>
+        <input type="submit" value="Submit"/>
+    </div>
+
+    if (Model.ParticipantList != null)
+    {
+        <table class="table table-bordered">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Options</th>
+            </tr>
+
+            @foreach (var p in Model.ParticipantList)
+            {
+                <tr>
+                    <td>@p.ParticipantFirstName</td>
+                    <td>@p.ParticipantsLastName</td>
+                    <td>@Html.ActionLink("Edit", "CombineParticipants", "Combine", new { id = p.ParticipantID }, null)</td>
+                </tr>
+            }
+        </table>
+    }
+}

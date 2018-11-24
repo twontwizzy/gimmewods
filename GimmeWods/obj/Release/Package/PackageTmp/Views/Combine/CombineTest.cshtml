@@ -1,0 +1,48 @@
+﻿@model GimmeWods.Models.CombineTest
+@{
+    ViewBag.Title = "Combine Test";
+}
+
+@using (Html.BeginForm("CombineTest", "Combine"))
+{
+    <h2>Combine Test</h2>
+
+    <div>
+        @Html.LabelFor(m => m.Test)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.Test)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.Measurement)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.Measurement)
+    </div>
+
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+
+    if (Model.TestList != null)
+    {
+        <table class="table table-bordered">
+            <tr>
+                <th>Test</th>
+                <th>Measurement</th>
+                <th>Options</th>
+            </tr>
+
+            @foreach (var p in Model.TestList)
+            {
+                <tr>
+                    <td>@p.Test</td>
+                    <td>@p.Measurement</td>
+                    <td>@Html.ActionLink("Edit", "CombineTest", "Combine", new { id = p.CombineTestID }, null)</td>
+                </tr>
+            }
+        </table>
+    }
+}
+

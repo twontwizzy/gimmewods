@@ -1,0 +1,90 @@
+﻿@model GimmeWods.Models.RandomWod
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@using (Html.BeginForm("Index", "Home"))
+{
+
+<div class="jumbotron">
+    <h1>Gimme Wods</h1>
+    <p class="lead">Click the big ass button to get a wod, dummy!</p>
+    <div style="clear:both"></div>
+    <div style="float:left;">
+
+        <p>Wod Optons</p>
+        <div>@Html.Label("Search for WODs that be done outside:") @Html.CheckBoxFor(m => m.IsOutsite)</div>
+        <div>
+            @{
+                var listItems = new SelectList(new[]
+                    {
+    new SelectListItem { Text = "--Select WOD Type--", Value = "0", Selected = true },
+new SelectListItem { Text = "Time", Value = "Time" },
+new SelectListItem { Text = "AMRAP", Value = "AMRAP"},
+}, "Value", "Text");
+            }
+
+            @Html.Label("Wod Type:") @Html.DropDownListFor(m => m.WodType, listItems)
+        </div>
+        <div>
+            @{
+                var equipments = new SelectList(new[]
+                    {
+
+new SelectListItem { Text = "KB", Value = "KB", Selected = true },
+new SelectListItem { Text = "DB", Value = "DB"},
+new SelectListItem { Text = "BB", Value = "BB"},
+new SelectListItem { Text = "Box", Value = "Box"},
+new SelectListItem { Text = "Rower", Value = "Rower"},
+new SelectListItem { Text = "Pull Up Bar", Value = "Pull Up Bar"},
+}, "Value", "Text");
+            }
+
+            @Html.Label("Equipment:", new { style = "vertical-align:top" }) @Html.ListBoxFor(m => m.SelectedEquipment, equipments, new { size = 10, style = "width: 100%" })
+        </div>
+        <div>
+            @{
+                var movements = new SelectList(new[]
+                    {
+
+new SelectListItem { Text = "Clean", Value = "Clean", Selected = true },
+new SelectListItem { Text = "Snatch", Value = "Snatch"},
+new SelectListItem { Text = "DL", Value = "DL"},
+new SelectListItem { Text = "Squat", Value = "Squat"},
+new SelectListItem { Text = "S2OH", Value = "S2OH"},
+new SelectListItem { Text = "Pull Up", Value = "Pull Up"},
+new SelectListItem { Text = "TTB", Value = "TTB"},
+new SelectListItem { Text = "Lunge", Value = "Lunge"},
+new SelectListItem { Text = "Box Jump", Value = "Box Jump"},
+new SelectListItem { Text = "HSPU", Value = "HSPU"},
+new SelectListItem { Text = "Run", Value = "Run"},
+}, "Value", "Text");
+            }
+
+            @Html.Label("Movement:", new { style = "vertical-align:top" }) @Html.ListBoxFor(m => m.SelectedMovement, movements, new { size = 10, style = "width: 100%" })
+
+        </div>
+
+    </div>
+    <div style="float:left;margin-left:20px; border:1px solid black; padding:5px; background-color:white">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>@Model.WODName</h2>
+                @if (Model.ExerciseList != null && Model.ExerciseList.Count > 0)
+                {
+                    foreach (var e in Model.ExerciseList)
+                    {
+                        <p>
+                            @e.Exercise
+                        </p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <p style="text-align:center"><button type="submit" class="btn btn-primary btn-lg">Get Wod</button></p>
+</div>
+
+    
+}

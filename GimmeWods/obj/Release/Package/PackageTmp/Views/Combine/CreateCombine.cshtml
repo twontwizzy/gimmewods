@@ -1,0 +1,44 @@
+﻿@model GimmeWods.Models.Combine
+@{
+    ViewBag.Title = "Create Combine";
+}
+
+
+
+@using (Html.BeginForm("CreateCombine", "Combine"))
+{
+    <h2>Create Combine</h2>
+
+    <div>
+        @Html.LabelFor(m => m.CombineDate)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.CombineDate)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.CombineName)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.CombineName)
+    </div>
+
+    <div>
+        <h3>@Html.Label("Tests:", new { style = "vertical-align:top" })</h3>
+    </div>
+    <div>
+         @Html.ListBoxFor(m => m.SelectedTests, ViewBag.TestSelectList as SelectList, new { size = 10, style = "width: 100%" })
+    </div>
+
+    <div>
+        <h3>@Html.Label("Participants:", new { style = "vertical-align:top" }) </h3>
+    </div>
+    <div>
+        @Html.ListBoxFor(m => m.SelectedParticipants, ViewBag.ParticipantsSelectList as SelectList, new { size = 10, style = "width: 100%" })
+    </div>
+
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+}
+
