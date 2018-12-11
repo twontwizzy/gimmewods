@@ -12,6 +12,7 @@ namespace GimmeWods.Controllers
         public ActionResult Index()
         {
             Models.Combine model = new Models.Combine();
+            model.CombineList = Services.CombineService.GetCombines();
             return View(model);
         }
 
@@ -57,12 +58,9 @@ namespace GimmeWods.Controllers
         {
             Models.Combine model = new Models.Combine();
 
-            ViewBag.TestSelectList = new SelectList(Services.CombineService.GetTests(), "CombineTestID", "Test");
-            ViewBag.ParticipantsSelectList = new SelectList(Services.CombineService.GetParticipants().Select(m => new SelectListItem
-            {
-                Text = m.ParticipantFirstName + " " + m.ParticipantsLastName,
-                Value = m.ParticipantID.ToString()
-            }), "Value", "Text");
+            model.ParticipantList = Services.CombineService.GetParticipants();
+
+            model.TestList = Services.CombineService.GetTests();
 
             return View(model);
         }
@@ -72,28 +70,88 @@ namespace GimmeWods.Controllers
         {
             
 
-            ViewBag.TestSelectList = new SelectList(Services.CombineService.GetTests(), "CombineTestID", "Test");
-            ViewBag.ParticipantsSelectList = new SelectList(Services.CombineService.GetParticipants().Select(m => new SelectListItem
-            {
-                Text = m.ParticipantFirstName + " " + m.ParticipantsLastName,
-                Value = m.ParticipantID.ToString()
-            }), "Value", "Text");
-
             model.CombineID = Services.CombineService.InsertCombine(model.CombineName, model.CombineDate);
 
-            for(int i = 0; i < model.SelectedTests.Count(); i++)
+            for(int i = 0; i < model.TestList.Count(); i++)
             {
-                Services.CombineService.InsertCombineTests(model.CombineID, int.Parse(model.SelectedTests[i]));
-            }
-
-            for (int i = 0; i < model.SelectedTests.Count(); i++)
-            {
-
-                for (int p = 0; p < model.SelectedParticipants.Count(); p++)
+                if (model.TestList[i].IncludeInCombine == true)
                 {
-                    Services.CombineService.InsertCombineParticipants(model.CombineID, int.Parse(model.SelectedParticipants[p]), int.Parse(model.SelectedTests[i]));
+                    Services.CombineService.InsertCombineTests(model.CombineID, model.TestList[i].CombineTestID, model.TestList[i].IncludeInCombine, model.TestList[i].Attempts, model.TestList[i].InclueRepCount);
                 }
             }
+
+            for (int i = 0; i < model.TestList.Count(); i++)
+            {
+
+                for (int p = 0; p < model.ParticipantList.Count(); p++)
+                {
+                    if (model.TestList[i].IncludeInCombine == true)
+                    {
+                        if (model.ParticipantList[p].Checked == true)
+                        {
+                            Services.CombineService.InsertCombineParticipants(model.CombineID, model.ParticipantList[p].ParticipantID, model.TestList[i].CombineTestID);
+                        }
+                    }
+                }
+            }
+
+            model.TestList = Services.CombineService.GetTests();
+            model.ParticipantList = Services.CombineService.GetParticipants();
+
+            return View(model);
+        }
+
+        public ActionResult EditCombine(int id)
+        {
+            Models.Combine model = new Models.Combine();
+
+            model = Services.CombineService.GetCombines().Where(m => m.CombineID == id).SingleOrDefault();
+
+            model.ParticipantList = Services.CombineService.GetParticipants(id);
+
+            model.TestList = Services.CombineService.GetTests(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditCombine(Models.Combine model)
+        {
+           
+
+            Services.CombineService.UpdateCombine(model.CombineName, model.CombineDate, model.CombineID);
+
+            //Delete Tests
+            Services.CombineService.DeleteCombineTests(model.CombineID);
+            //Insert Tests
+            for (int i = 0; i < model.TestList.Count(); i++)
+            {
+                if (model.TestList[i].IncludeInCombine == true)
+                {
+                    Services.CombineService.InsertCombineTests(model.CombineID, model.TestList[i].CombineTestID, model.TestList[i].IncludeInCombine, model.TestList[i].Attempts, model.TestList[i].InclueRepCount);
+                }
+            }
+
+            //Delte Participants
+            Services.CombineService.DeleteParticipantTests(model.CombineID);
+            //Insert Participants
+            for (int i = 0; i < model.TestList.Count(); i++)
+            {
+
+                for (int p = 0; p < model.ParticipantList.Count(); p++)
+                {
+                    if (model.TestList[i].IncludeInCombine == true)
+                    {
+                        if (model.ParticipantList[p].Checked == true)
+                        {
+                            Services.CombineService.InsertCombineParticipants(model.CombineID, model.ParticipantList[p].ParticipantID, model.TestList[i].CombineTestID);
+                        }
+                    }
+                }
+            }
+
+            model.TestList = Services.CombineService.GetTests(model.CombineID);
+            model.ParticipantList = Services.CombineService.GetParticipants(model.CombineID);
 
             return View(model);
         }

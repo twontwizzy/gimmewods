@@ -1,16 +1,14 @@
 ﻿@model GimmeWods.Models.Combine
 @{
-    ViewBag.Title = "Create Combine";
+    ViewBag.Title = "Edit Combine";
 }
 
-
-
-@using (Html.BeginForm("CreateCombine", "Combine"))
+@using (Html.BeginForm("EditCombine", "Combine"))
 {
-    <h2>Create Combine</h2>
+    <h2>Edit Combine</h2>
 
     <div>
-        @Html.LabelFor(m => m.CombineDate)
+        @Html.LabelFor(m => m.CombineDate) @Html.HiddenFor(m => m.CombineID)
     </div>
     <div>
         @Html.EditorFor(m => m.CombineDate)
@@ -68,4 +66,5 @@
         <input type="submit" value="Submit" />
     </div>
 }
+
 

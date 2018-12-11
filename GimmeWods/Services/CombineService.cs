@@ -53,6 +53,35 @@ namespace GimmeWods.Services
             return pList;
         }
 
+        public static List<Models.Participants> GetParticipants(int combineID)
+        {
+            List<Models.Participants> pList = new List<Models.Participants>();
+
+            var selectedParticipants = GetCombineParticipants(combineID);
+
+            var participants = GetParticipants();
+
+            foreach (var item in participants)
+            {
+                Models.Participants p = new Models.Participants();
+
+                p.ParticipantID = item.ParticipantID;
+                p.ParticipantFirstName = item.ParticipantFirstName;
+                p.ParticipantsLastName = item.ParticipantsLastName;
+
+                foreach (var s in selectedParticipants)
+                {
+                    if (s.ParticipantID == item.ParticipantID)
+                    {
+                        p.Checked = true;
+                    }
+                    
+                }
+                pList.Add(p);
+            }
+            return pList;
+        }
+
         public static void InsertTests(string test, string measurement)
         {
             using (var connection = new SqlConnection(connectionString))
@@ -86,10 +115,74 @@ namespace GimmeWods.Services
                             CombineTestID = reader.GetInt32(reader.GetOrdinal("TestID")),
                             Test = reader.GetString(reader.GetOrdinal("Test")),
                             Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
+                           
                         });
                     }
                 }
                 connection.Close();
+            }
+            return cList;
+        }
+
+        public static List<Models.CombineTest> GetCombineTests(int combineID)
+        {
+            List<Models.CombineTest> cList = new List<Models.CombineTest>();
+
+            using (var connection = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("[dbo].[GetCombineTests]", connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CombineID", combineID);
+                connection.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cList.Add(new Models.CombineTest
+                        {
+                            CombineTestID = reader.GetInt32(reader.GetOrdinal("TestID")),
+                            Test = reader.GetString(reader.GetOrdinal("Test")),
+                            Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
+                            Attempts = reader.GetInt32(reader.GetOrdinal("Attempts")),
+                            IncludeInCombine = reader.GetBoolean(reader.GetOrdinal("IncludeInCombine")),
+                            InclueRepCount = reader.GetBoolean(reader.GetOrdinal("IncludeRepCount")),
+                        });
+                    }
+                }
+                connection.Close();
+            }
+            return cList;
+        }
+
+        public static List<Models.CombineTest> GetTests(int combineID)
+        {
+            List<Models.CombineTest> cList = new List<Models.CombineTest>();
+
+            var selectedTests = GetCombineTests(combineID);
+
+            var test = GetTests();
+
+            foreach (var item in test)
+            {
+                Models.CombineTest c = new Models.CombineTest();
+
+                c.CombineTestID = item.CombineTestID;
+                c.Test = item.Test;
+                c.Measurement = item.Measurement;
+                
+
+                foreach (var s in selectedTests)
+                {
+                    if (s.CombineTestID == item.CombineTestID)
+                    {
+                        c.IncludeInCombine = s.IncludeInCombine;
+                        c.Attempts = s.Attempts;
+                        c.IncludeInCombine = s.IncludeInCombine;
+                        c.InclueRepCount = s.InclueRepCount;
+                    }
+                    
+                }
+                cList.Add(c);
             }
             return cList;
         }
@@ -112,7 +205,24 @@ namespace GimmeWods.Services
             return id;
         }
 
-        public static void InsertCombineTests(int combineID, int testID)
+        public static void UpdateCombine(string combineName, DateTime combineDate, int combineID)
+        {
+            int id = 0;
+
+            using (var connection = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("[dbo].[UpdateCombine]", connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CombineName", combineName);
+                cmd.Parameters.AddWithValue("@CombineDate", combineDate);
+                cmd.Parameters.AddWithValue("@CombineID", combineID);
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public static void InsertCombineTests(int combineID, int testID, bool includeInCombine, int attempts, bool includeRepCount)
         {
             using (var connection = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand("[dbo].[InsertCombineTests]", connection))
@@ -120,6 +230,22 @@ namespace GimmeWods.Services
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CombineID", combineID);
                 cmd.Parameters.AddWithValue("@testId", testID);
+                cmd.Parameters.AddWithValue("@IncludeInCombine", includeInCombine);
+                cmd.Parameters.AddWithValue("@Attempts", attempts);
+                cmd.Parameters.AddWithValue("@IncludeRepCount", includeRepCount);
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public static void DeleteCombineTests(int combineID)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("[dbo].[DeleteCombineTests]", connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CombineID", combineID);
                 connection.Open();
                 cmd.ExecuteNonQuery();
                 connection.Close();
@@ -135,6 +261,19 @@ namespace GimmeWods.Services
                 cmd.Parameters.AddWithValue("@CombineID", combineID);
                 cmd.Parameters.AddWithValue("@TestId", testID);
                 cmd.Parameters.AddWithValue("@ParticipantID", participantID);
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public static void DeleteParticipantTests(int combineID)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("[dbo].[DeleteParticipantTests]", connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CombineID", combineID);
                 connection.Open();
                 cmd.ExecuteNonQuery();
                 connection.Close();
@@ -160,6 +299,33 @@ namespace GimmeWods.Services
                             CombineID = reader.GetInt32(reader.GetOrdinal("CombineID")),
                             CombineName = reader.GetString(reader.GetOrdinal("CombineName")),
                             CombineDate = reader.GetDateTime(reader.GetOrdinal("CombineDate")),
+                        });
+                    }
+                }
+                connection.Close();
+            }
+            return cList;
+        }
+
+        public static List<Models.Participants> GetCombineParticipants(int combineID)
+        {
+            List<Models.Participants> cList = new List<Models.Participants>();
+
+            using (var connection = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("[dbo].[GetCombineParticipants]", connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CombineID", combineID);
+                connection.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cList.Add(new Models.Participants
+                        {
+                            ParticipantID = reader.GetInt32(reader.GetOrdinal("ParticipantID")),
+                            ParticipantFirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            ParticipantsLastName = reader.GetString(reader.GetOrdinal("LastName")),
                         });
                     }
                 }

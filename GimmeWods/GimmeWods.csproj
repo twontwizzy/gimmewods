@@ -196,6 +196,7 @@
     <Content Include="Views\Combine\CreateCombine.cshtml" />
     <Content Include="Views\Combine\CombineParticipants.cshtml" />
     <Content Include="Views\Combine\CombineTest.cshtml" />
+    <Content Include="Views\Combine\EditCombine.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
