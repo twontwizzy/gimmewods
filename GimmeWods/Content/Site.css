@@ -22,3 +22,9 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.jumbotron {
+    background-image: url("/Content/Images/barbell-black-and-white-equipment-949131.jpg");
+    background-size: cover;
+    
+}

@@ -1,90 +1,72 @@
 ﻿@model GimmeWods.Models.RandomWod
 @{
-    ViewBag.Title = "Home Page";
+                /**/
+
+                ViewBag.Title = "Home Page";
 }
 
 @using (Html.BeginForm("Index", "Home"))
 {
 
-<div class="jumbotron">
-    <h1>Gimme Wods</h1>
-    <p class="lead">Click the big ass button to get a wod, dummy!</p>
-    <div style="clear:both"></div>
-    <div style="float:left;">
-
-        <p>Wod Optons</p>
-        <div>@Html.Label("Search for WODs that be done outside:") @Html.CheckBoxFor(m => m.IsOutsite)</div>
-        <div>
-            @{
-                var listItems = new SelectList(new[]
-                    {
-    new SelectListItem { Text = "--Select WOD Type--", Value = "0", Selected = true },
-new SelectListItem { Text = "Time", Value = "Time" },
-new SelectListItem { Text = "AMRAP", Value = "AMRAP"},
-}, "Value", "Text");
-            }
-
-            @Html.Label("Wod Type:") @Html.DropDownListFor(m => m.WodType, listItems)
-        </div>
-        <div>
-            @{
-                var equipments = new SelectList(new[]
-                    {
-
-new SelectListItem { Text = "KB", Value = "KB", Selected = true },
-new SelectListItem { Text = "DB", Value = "DB"},
-new SelectListItem { Text = "BB", Value = "BB"},
-new SelectListItem { Text = "Box", Value = "Box"},
-new SelectListItem { Text = "Rower", Value = "Rower"},
-new SelectListItem { Text = "Pull Up Bar", Value = "Pull Up Bar"},
-}, "Value", "Text");
-            }
-
-            @Html.Label("Equipment:", new { style = "vertical-align:top" }) @Html.ListBoxFor(m => m.SelectedEquipment, equipments, new { size = 10, style = "width: 100%" })
-        </div>
-        <div>
-            @{
-                var movements = new SelectList(new[]
-                    {
-
-new SelectListItem { Text = "Clean", Value = "Clean", Selected = true },
-new SelectListItem { Text = "Snatch", Value = "Snatch"},
-new SelectListItem { Text = "DL", Value = "DL"},
-new SelectListItem { Text = "Squat", Value = "Squat"},
-new SelectListItem { Text = "S2OH", Value = "S2OH"},
-new SelectListItem { Text = "Pull Up", Value = "Pull Up"},
-new SelectListItem { Text = "TTB", Value = "TTB"},
-new SelectListItem { Text = "Lunge", Value = "Lunge"},
-new SelectListItem { Text = "Box Jump", Value = "Box Jump"},
-new SelectListItem { Text = "HSPU", Value = "HSPU"},
-new SelectListItem { Text = "Run", Value = "Run"},
-}, "Value", "Text");
-            }
-
-            @Html.Label("Movement:", new { style = "vertical-align:top" }) @Html.ListBoxFor(m => m.SelectedMovement, movements, new { size = 10, style = "width: 100%" })
-
-        </div>
-
-    </div>
-    <div style="float:left;margin-left:20px; border:1px solid black; padding:5px; background-color:white">
-        <div class="row">
-            <div class="col-md-12">
-                <h2>@Model.WODName</h2>
-                @if (Model.ExerciseList != null && Model.ExerciseList.Count > 0)
-                {
-                    foreach (var e in Model.ExerciseList)
-                    {
-                        <p>
-                            @e.Exercise
-                        </p>
-                    }
-                }
+    <div class="container">
+        <!-- Jumbotron Header -->
+        <header class="jumbotron my-4">
+            <h1 class="display-3">Welcome to JR's Workshop</h1>
+            <p class="lead">A place to get fit.</p>
+            @*<a href="#" class="btn btn-primary btn-lg">Call to action!</a>*@
+        </header>
+        <!-- Page Features -->
+        <div class="row text-center">
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="/Content/Images/active-equipment-exercise-897064.jpg" alt="WOD">
+                    <div class="card-body">
+                        <h4 class="card-title">Gimme Wods</h4>
+                        <p class="card-text"></p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Home/GimmeWods" class="btn btn-primary">Go To Wods page!</a>
+                    </div>
+                </div>
             </div>
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="/Content/Images/action-adult-athlete-936094.jpg" alt="Combine">
+                    <div class="card-body">
+                        <h4 class="card-title">Combine</h4>
+                        <p class="card-text"></p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Combine/Index" class="btn btn-primary">Go to combine page!</a>
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">Card title</h4>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Find Out More!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">Card title</h4>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente, tempore debitis beatae culpa natus architecto.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Find Out More!</a>
+                    </div>
+                </div>
+            </div>*@
         </div>
+        <!-- /.row -->
     </div>
-    <div style="clear:both"></div>
-    <p style="text-align:center"><button type="submit" class="btn btn-primary btn-lg">Get Wod</button></p>
-</div>
 
-    
 }

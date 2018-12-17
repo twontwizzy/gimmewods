@@ -12,12 +12,17 @@ namespace GimmeWods.Controllers
     {
         public ActionResult Index()
         {
+            return View();
+        }
+
+        public ActionResult GimmeWods()
+        {
             RandomWod model = new RandomWod();
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Index(RandomWod model)
+        public ActionResult GimmeWods(RandomWod model)
         {
             string movement = string.Empty;
             if (model.SelectedMovement != null)

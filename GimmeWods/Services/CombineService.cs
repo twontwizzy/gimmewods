@@ -252,7 +252,7 @@ namespace GimmeWods.Services
             }
         }
 
-        public static void InsertCombineParticipants(int combineID, int participantID, int testID)
+        public static void InsertCombineParticipants(int combineID, int participantID, int testID, int attempt)
         {
             using (var connection = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand("[dbo].[InsertParticipantTest]", connection))
@@ -261,6 +261,7 @@ namespace GimmeWods.Services
                 cmd.Parameters.AddWithValue("@CombineID", combineID);
                 cmd.Parameters.AddWithValue("@TestId", testID);
                 cmd.Parameters.AddWithValue("@ParticipantID", participantID);
+                cmd.Parameters.AddWithValue("@Attempt", attempt);
                 connection.Open();
                 cmd.ExecuteNonQuery();
                 connection.Close();

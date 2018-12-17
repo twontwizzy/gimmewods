@@ -13,7 +13,7 @@
         @Html.LabelFor(m => m.CombineDate)
     </div>
     <div>
-        @Html.TextBoxFor(m => m.CombineDate)
+        @Html.EditorFor(m => m.CombineDate)
     </div>
 
     <div>
@@ -27,14 +27,41 @@
         <h3>@Html.Label("Tests:", new { style = "vertical-align:top" })</h3>
     </div>
     <div>
-         @Html.ListBoxFor(m => m.SelectedTests, ViewBag.TestSelectList as SelectList, new { size = 10, style = "width: 100%" })
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Test Name</th>
+                <th>Include in Combine</th>
+                <th>Attempts</th>
+                <th>Include rep count</th>
+            </tr>
+
+            @if (Model.TestList != null)
+            {
+                for (int i = 0; i < Model.TestList.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.TestList[i].Test @Html.HiddenFor(m => m.TestList[i].CombineTestID)</td>
+                        <td>@Html.CheckBoxFor(m => m.TestList[i].IncludeInCombine, Model.TestList[i].CombineTestID)</td>
+                        <td>@Html.TextBoxFor(m => m.TestList[i].Attempts)</td>
+                        <td>@Html.CheckBoxFor(m => m.TestList[i].InclueRepCount, Model.TestList[i].CombineTestID)</td>
+                    </tr>
+                }
+            }
+        </table>
     </div>
 
     <div>
         <h3>@Html.Label("Participants:", new { style = "vertical-align:top" }) </h3>
     </div>
     <div>
-        @Html.ListBoxFor(m => m.SelectedParticipants, ViewBag.ParticipantsSelectList as SelectList, new { size = 10, style = "width: 100%" })
+        @if (Model.ParticipantList != null)
+        {
+            for (int i = 0; i < Model.ParticipantList.Count; i++)
+            {
+                @Html.HiddenFor(m => m.ParticipantList[i].ParticipantID)
+                <p>@Html.CheckBoxFor(m => m.ParticipantList[i].Checked) @Model.ParticipantList[i].ParticipantFirstName @Model.ParticipantList[i].ParticipantsLastName</p>
+            }
+        }
     </div>
 
     <div>

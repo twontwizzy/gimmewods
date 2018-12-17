@@ -67,32 +67,32 @@ namespace CombineWebService.Services
             }
         }
 
-        public static List<Models.CombineTest> GetTests()
-        {
-            List<Models.CombineTest> cList = new List<Models.CombineTest>();
+        //public static List<Models.CombineTest> GetTests()
+        //{
+        //    List<Models.CombineTest> cList = new List<Models.CombineTest>();
 
-            using (var connection = new SqlConnection(connectionString))
-            using (SqlCommand cmd = new SqlCommand("[dbo].[GetTest]", connection))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
+        //    using (var connection = new SqlConnection(connectionString))
+        //    using (SqlCommand cmd = new SqlCommand("[dbo].[GetTest]", connection))
+        //    {
+        //        cmd.CommandType = CommandType.StoredProcedure;
 
-                connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        cList.Add(new Models.CombineTest
-                        {
-                            CombineTestID = reader.GetInt32(reader.GetOrdinal("TestID")),
-                            Test = reader.GetString(reader.GetOrdinal("Test")),
-                            Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
-                        });
-                    }
-                }
-                connection.Close();
-            }
-            return cList;
-        }
+        //        connection.Open();
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                cList.Add(new Models.CombineTest
+        //                {
+        //                    CombineTestID = reader.GetInt32(reader.GetOrdinal("TestID")),
+        //                    Test = reader.GetString(reader.GetOrdinal("Test")),
+        //                    Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
+        //                });
+        //            }
+        //        }
+        //        connection.Close();
+        //    }
+        //    return cList;
+        //}
 
         public static int InsertCombine(string combineName, DateTime combineDate)
         {
@@ -187,6 +187,7 @@ namespace CombineWebService.Services
                             ParticipantID = reader.GetInt32(reader.GetOrdinal("ParticipantID")),
                             ParticipantFirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                             ParticipantsLastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            CombineName = reader.GetString(reader.GetOrdinal("CombineName")),
                         });
                     }
                 }
@@ -214,8 +215,9 @@ namespace CombineWebService.Services
                         {
                             CombineTestID = reader.GetInt32(reader.GetOrdinal("ID")),
                             Test = reader.GetString(reader.GetOrdinal("Test")),
-                            Result = reader.IsDBNull(reader.GetOrdinal("Result")) ? null : reader.GetString(reader.GetOrdinal("Result")),
-                            Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
+                            Participant = reader.GetString(reader.GetOrdinal("Participant")),
+                            //Result = reader.IsDBNull(reader.GetOrdinal("Result")) ? null : reader.GetString(reader.GetOrdinal("Result")),
+                            //Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
                         });
                     }
                 }
@@ -224,7 +226,40 @@ namespace CombineWebService.Services
             return cList;
         }
 
-        public static void UpdateParticipantTest(int id, string result)
+        public static List<Models.CombineResult> GetTestResults(int participantTestId)
+        {
+            List<Models.CombineResult> cList = new List<Models.CombineResult>();
+
+            using (var connection = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("[dbo].[GetParticipantTestResults]", connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ParticipantTestID", participantTestId);
+                connection.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cList.Add(new Models.CombineResult
+                        {
+                            CombineTestID = reader.GetInt32(reader.GetOrdinal("CombineID")),
+                            ParticipantTestID = reader.GetInt32(reader.GetOrdinal("ID")),
+                            ParticipantID = reader.GetInt32(reader.GetOrdinal("ParticipantID")),
+                            Result = reader.IsDBNull(reader.GetOrdinal("Result")) ? null : reader.GetString(reader.GetOrdinal("Result")),
+                            Measurement = reader.GetString(reader.GetOrdinal("Measurement")),
+                            Attempt = reader.GetInt32(reader.GetOrdinal("Attempt")),
+                            IncludeRepCount = reader.GetBoolean(reader.GetOrdinal("IncludeRepCount")),
+                            NumberOfReps = reader.IsDBNull(reader.GetOrdinal("NumberOfReps")) ? null : reader.GetString(reader.GetOrdinal("NumberOfReps")),
+                            PageTitle = reader.GetString(reader.GetOrdinal("PageTitle")),
+                        });
+                    }
+                }
+                connection.Close();
+            }
+            return cList;
+        }
+
+        public static void UpdateParticipantTest(int id, string result, int numberOfReps)
         {
             using (var connection = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand("[dbo].[UpdateParticipantResults]", connection))
@@ -232,6 +267,7 @@ namespace CombineWebService.Services
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", id);
                 cmd.Parameters.AddWithValue("@Result", result);
+                cmd.Parameters.AddWithValue("@NumberOfReps", numberOfReps);
                 connection.Open();
                 cmd.ExecuteNonQuery();
                 connection.Close();

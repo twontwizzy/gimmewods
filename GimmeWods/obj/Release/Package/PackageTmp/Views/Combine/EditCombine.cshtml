@@ -1,0 +1,70 @@
+﻿@model GimmeWods.Models.Combine
+@{
+    ViewBag.Title = "Edit Combine";
+}
+
+@using (Html.BeginForm("EditCombine", "Combine"))
+{
+    <h2>Edit Combine</h2>
+
+    <div>
+        @Html.LabelFor(m => m.CombineDate) @Html.HiddenFor(m => m.CombineID)
+    </div>
+    <div>
+        @Html.EditorFor(m => m.CombineDate)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.CombineName)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.CombineName)
+    </div>
+
+    <div>
+        <h3>@Html.Label("Tests:", new { style = "vertical-align:top" })</h3>
+    </div>
+    <div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Test Name</th>
+                <th>Include in Combine</th>
+                <th>Attempts</th>
+                <th>Include rep count</th>
+            </tr>
+
+            @if (Model.TestList != null)
+            {
+                for (int i = 0; i < Model.TestList.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.TestList[i].Test @Html.HiddenFor(m => m.TestList[i].CombineTestID)</td>
+                        <td>@Html.CheckBoxFor(m => m.TestList[i].IncludeInCombine, Model.TestList[i].CombineTestID)</td>
+                        <td>@Html.TextBoxFor(m => m.TestList[i].Attempts)</td>
+                        <td>@Html.CheckBoxFor(m => m.TestList[i].InclueRepCount, Model.TestList[i].CombineTestID)</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+
+    <div>
+        <h3>@Html.Label("Participants:", new { style = "vertical-align:top" }) </h3>
+    </div>
+    <div>
+        @if (Model.ParticipantList != null)
+        {
+            for (int i = 0; i < Model.ParticipantList.Count; i++)
+            {
+                @Html.HiddenFor(m => m.ParticipantList[i].ParticipantID)
+                <p>@Html.CheckBoxFor(m => m.ParticipantList[i].Checked) @Model.ParticipantList[i].ParticipantFirstName @Model.ParticipantList[i].ParticipantsLastName</p>
+            }
+        }
+    </div>
+
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+}
+
+

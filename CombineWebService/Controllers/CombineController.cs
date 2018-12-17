@@ -29,9 +29,9 @@ namespace CombineWebService.Controllers
         }
 
         // PUT: api/Combine/5
-        public void Put(CombineTest val)
+        public void Put(CombineResult val)
         {
-            CombineService.UpdateParticipantTest(val.CombineTestID, val.Result);
+            CombineService.UpdateParticipantTest(val.ParticipantTestID, val.Result, int.Parse(val.NumberOfReps));
         }
 
         // DELETE: api/Combine/5
@@ -51,6 +51,13 @@ namespace CombineWebService.Controllers
         public List<CombineTest> GetParticipantTest(int combineId, int participantId)
         {
             return CombineService.GetParticipantTest(combineId, participantId);
+        }
+
+        [Route("api/Combine/TestResults/{ID:int}")]
+        [HttpGet]
+        public List<CombineResult> GetTestResults(int id)
+        {
+            return CombineService.GetTestResults(id);
         }
     }
 }
